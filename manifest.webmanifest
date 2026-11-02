@@ -1,0 +1,15 @@
+{
+  "name": "电工计算器 · ElectroPocket",
+  "short_name": "电工计算器",
+  "description": "离线电子计算器与贴片电阻丝印识别",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f5f5",
+  "theme_color": "#0c5963",
+  "icons": [
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c5963">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="电工计算器">
+  <meta name="description" content="离线电子计算器：串并联、功率、模拟负载和贴片电阻丝印识别。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>电工计算器</title>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true"><span>Ω</span></div>
+      <div><p class="eyebrow">ELECTROPOCKET · OFFLINE</p><h1>电工计算器</h1></div>
+    </header>
+
+    <nav class="main-tabs" aria-label="应用页面">
+      <button class="main-tab active" data-page="calc-page"><span>ƒ</span> 计算</button>
+      <button class="main-tab" data-page="decode-page"><span>⌕</span> 丝印识别</button>
+    </nav>
+
+    <section id="calc-page" class="page">
+      <div class="intro-card"><div class="intro-icon">ϟ</div><div><strong>随身电子工具箱</strong><p>离线计算 · 结果即刻可读</p></div><span class="offline-badge">● 离线</span></div>
+      <div class="mode-tabs" aria-label="计算类型">
+        <button class="mode-tab active" data-mode="resistor">串并联</button>
+        <button class="mode-tab" data-mode="power">功率</button>
+        <button class="mode-tab" data-mode="load">模拟负载</button>
+      </div>
+
+      <section id="resistor-panel" class="panel">
+        <div class="section-head"><div class="section-icon">⟁</div><div><h2>电阻等效值</h2><p>输入 2–6 个阻值，计算串联或并联结果</p></div></div>
+        <div class="segmented" aria-label="电阻连接方式">
+          <button class="selected" data-resistor-mode="series">串联</button><button data-resistor-mode="parallel">并联</button>
+        </div>
+        <div id="resistor-list" class="field-list"></div>
+        <button id="add-resistor" class="text-button">＋ 添加电阻 <span>最多 6 个</span></button>
+        <div id="resistor-result"></div>
+        <div class="formula"><div><span>串联</span><b>Rₑq = R₁ + R₂ + …</b></div><div><span>并联</span><b>1/Rₑq = 1/R₁ + 1/R₂ + …</b></div></div>
+      </section>
+
+      <section id="power-panel" class="panel" hidden>
+        <div class="section-head"><div class="section-icon">ϟ</div><div><h2>功率与欧姆定律</h2><p>填写任意两个量，计算其余参数</p></div></div>
+        <div class="power-fields">
+          <label><i>V</i><span>电压</span><input id="power-v" inputmode="decimal" type="number" min="0" step="any" placeholder="留空以计算"><em>V</em></label>
+          <label><i>I</i><span>电流</span><input id="power-i" inputmode="decimal" type="number" min="0" step="any" placeholder="留空以计算"><em>A</em></label>
+          <label><i>R</i><span>电阻</span><input id="power-r" inputmode="decimal" type="number" min="0" step="any" placeholder="留空以计算"><em>Ω</em></label>
+          <label><i>P</i><span>功率</span><input id="power-p" inputmode="decimal" type="number" min="0" step="any" placeholder="留空以计算"><em>W</em></label>
+        </div>
+        <p class="microcopy">请只填写两个已知量；数值需大于 0。</p>
+        <div id="power-result"></div>
+        <div class="formula"><div><span>功率</span><b>P = V × I = I²R = V²/R</b></div><div><span>欧姆定律</span><b>V = I × R</b></div></div>
+      </section>
+
+      <section id="load-panel" class="panel" hidden>
+        <div class="section-head"><div class="section-icon">▣</div><div><h2>模拟负载</h2><p>估算电源接入负载后的电流和功耗</p></div></div>
+        <label class="field-row"><span>电源电压</span><input id="load-voltage" type="number" inputmode="decimal" min="0" step="any" value="12"><em>V</em></label>
+        <div class="segmented load-modes" aria-label="负载类型">
+          <button class="selected" data-load-mode="resistor">电阻负载</button><button data-load-mode="current">恒流负载</button><button data-load-mode="power">恒功率负载</button>
+        </div>
+        <label class="field-row"><span id="load-setting-label">负载阻值</span><input id="load-setting" type="number" inputmode="decimal" min="0" step="any" value="8"><em id="load-setting-unit">Ω</em></label>
+        <div id="load-presets" class="preset-row"><button data-preset="4">4 Ω</button><button data-preset="8">8 Ω</button><button data-preset="100">100 Ω</button><button data-preset="1000">1 kΩ</button></div>
+        <div id="load-result"></div>
+        <details class="rating-details"><summary>额定功率参考</summary><div class="rating-content"><label>电阻额定功率<select id="load-rating"><option value="0.125">0.125 W</option><option value="0.25">0.25 W</option><option value="0.5">0.5 W</option><option value="1">1 W</option><option value="2">2 W</option><option value="5" selected>5 W</option><option value="10">10 W</option><option value="25">25 W</option><option value="50">50 W</option></select></label><p id="rating-result" class="microcopy"></p></div></details>
+        <p class="footnote">理想负载估算，未包含温升、电源内阻和器件容差。</p>
+      </section>
+    </section>
+
+    <section id="decode-page" class="page" hidden>
+      <div class="intro-card decoder-intro"><div class="intro-icon">⌕</div><div><strong>看懂元件上的数字</strong><p>快速换算贴片电阻标记</p></div></div>
+      <section class="panel">
+        <div class="section-head"><div class="section-icon">⌕</div><div><h2>电阻丝印解码</h2><p>支持常见三位码、四位码和 R 小数码</p></div></div>
+        <label class="code-entry"><span>#</span><input id="marking-code" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" value="510" placeholder="例如 510、1001、4R7"><button id="clear-code" type="button">清除</button></label>
+        <div id="decode-result"></div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><div class="section-icon">▦</div><div><h2>封装尺寸参考</h2><p>请根据元件外形选择，丝印本身通常不编码封装</p></div></div>
+        <label class="select-row"><span>封装</span><select id="package-select"><option value="不确定">不确定</option><option value="0201">0201</option><option value="0402">0402</option><option value="0603">0603</option><option value="0805">0805</option><option value="1206">1206</option><option value="1210">1210</option><option value="2010">2010</option><option value="2512">2512</option><option value="SOT-23">SOT-23</option><option value="SOT-223">SOT-223</option><option value="TO-92">TO-92</option></select></label>
+        <div id="package-result" class="package-note"></div>
+      </section>
+      <section class="panel examples">
+        <div class="section-head"><div class="section-icon">ⓘ</div><div><h2>代码速查</h2></div></div>
+        <div><b>510</b><span>51 × 10⁰ = 51 Ω</span></div><div><b>472</b><span>47 × 10² = 4.7 kΩ</span></div><div><b>1001</b><span>100 × 10¹ = 1 kΩ</span></div><div><b>4R7</b><span>R 为小数点 = 4.7 Ω</span></div>
+        <p class="footnote">解码针对常见贴片电阻。芯片、二极管和三极管顶标常是厂商专用代码，不能只凭相同字符通用判断。</p>
+      </section>
+    </section>
+
+    <footer><span>✈</span> 所有计算在本机完成，无需网络</footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>
